@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { TextField, ThemeProvider, createTheme } from '@mui/material';
 import { Error } from './Error';
+import Image from 'next/image';
 
 export function CargarProductos({
   productos,
@@ -15,6 +16,10 @@ export function CargarProductos({
   const [marca, setMarca] = useState('');
   const [precio, setPrecio] = useState('');
   const [descripcion, setDescripcion] = useState('');
+
+  const [file, setFile] = useState();
+
+  const handleFileChange = (e) => setFile(e.target.files[0]);
 
   const [imagen, setImagen] = useState(null);
 
@@ -31,8 +36,30 @@ export function CargarProductos({
     }
   }, [producto]);
 
-  const handlerSubmit = (e) => {
+  const handlerSubmit = async (e) => {
     e.preventDefault();
+
+    // Si no hay archivo no pasa nada
+    if (!file) return;
+
+    try {
+      const dataForms = new FormData();
+      dataForms.set('file', file);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: dataForms,
+      });
+
+      if (res.ok) {
+        console.log('Archivos subidos correctamente');
+      }
+      const data = await res.json();
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+
     if ([categoria, nombre, stok, marca, precio, descripcion].includes('')) {
       setError(true);
       return;
@@ -44,7 +71,7 @@ export function CargarProductos({
       marca,
       precio,
       descripcion,
-      imagen: imagen ? URL.createObjectURL(imagen) : null,
+      file: file ? URL.createObjectURL(file) : null,
     };
     if (producto.id) {
       //MODO EDITAR
@@ -152,13 +179,22 @@ export function CargarProductos({
             color='marron'
             type='number'
           />
-          <TextField
+          {/* <TextField
             id='imagen'
             variant='outlined'
             fullWidth
             margin='normal'
             onChange={(e) => setImagen(e.target.files[0])}
             type='file'
+            color='marron'
+          /> */}
+          <TextField
+            id='file'
+            variant='outlined'
+            fullWidth
+            margin='normal'
+            type='file'
+            onChange={handleFileChange}
             color='marron'
           />
 

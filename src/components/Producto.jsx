@@ -10,7 +10,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
 export function Producto({ producto, setProducto, eliminarProducto }) {
-  // console.log(paciente);
   const handleEliminar = () => {
     const respuesta = confirm('¿Desea Eliminar el Producto?');
 
@@ -23,7 +22,7 @@ export function Producto({ producto, setProducto, eliminarProducto }) {
       <Card sx={{ width: '50%' }}>
         <CardMedia
           sx={{ height: 140 }}
-          image={producto.imagen}
+          image={producto.file}
           title='Producto'
         />
         <CardContent>
